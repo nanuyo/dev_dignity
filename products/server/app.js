@@ -2,6 +2,13 @@ const express = require('express');
 const app = express();
 const session = require('express-session');
 const fs = require('fs');
+const serverStatic = require('serve-static')
+const path = require('path')
+
+// SERVES FILES from our dist directory which now contains out index.html 
+app.use('/', serverStatic(path.join(__dirname, '/dist')))
+
+
 
 app.use(session({
   secret: 'secret code',
@@ -17,8 +24,10 @@ app.use(express.json({
   limit: '50mb'
 }));
 
-const server = app.listen(3000, () => {
-  console.log('Server started. port 3000.');
+const port = process.env.PORT || 3000
+
+const server = app.listen(port, () => {
+  console.log('Server started. port:' + port);
 });
 
 let sql = require('./sql.js');
@@ -30,11 +39,11 @@ fs.watchFile(__dirname + '/sql.js', (curr, prev) => {
 });
 
 const db = {
-  database: "dev_class",
+  database: "heroku_796fc805f680d4a",
   connectionLimit: 10,
-  host: "192.168.219.100",
-  user: "root",
-  password: "mariadb"
+  host: "us-cdbr-east-03.cleardb.com",
+  user: "bf307ee4791b65",
+  password: "f9ebacd1"
 };
 
 const dbPool = require('mysql').createPool(db);
